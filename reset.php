@@ -1,19 +1,13 @@
 <?php
-header('Content-Type: text/plain');
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $filePath = 'scores.json';
 
-echo "Reset script is running\n";
+    if (file_exists($filePath)) {
+        file_put_contents($filePath, json_encode([]));
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $result = file_put_contents('scores.json', json_encode([]));
-
-    if ($result !== false) {
-        echo "Leaderboard reset successfully";
+        echo json_encode(['success' => true]);
     } else {
-        http_response_code(500);
-        echo "Failed to reset leaderboard";
+        echo json_encode(['success' => false]);
     }
-} else {
-    http_response_code(405);
-    echo "Invalid request";
 }
 ?>

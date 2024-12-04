@@ -1,19 +1,17 @@
 <?php
-header('Content-Type: text/plain');
-
-echo "Reset script is running\n";
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $result = file_put_contents('scores.json', json_encode([]));
-
-    if ($result !== false) {
-        echo "Leaderboard reset successfully";
+    $filePath = 'scores.json';
+    
+    // Check if the file exists before attempting to clear it
+    if (file_exists($filePath)) {
+        file_put_contents($filePath, json_encode([])); // Clear the file contents
+        echo json_encode(['message' => 'Leaderboard reset successful']);
     } else {
-        http_response_code(500);
-        echo "Failed to reset leaderboard";
+        http_response_code(404);
+        echo json_encode(['message' => 'Leaderboard file not found']);
     }
 } else {
     http_response_code(405);
-    echo "Invalid request";
+    echo json_encode(['message' => 'Invalid request method']);
 }
 ?>
